@@ -36,6 +36,7 @@ app.whenReady().then(() => {
         if (BrowserWindow.getAllWindows().length === 0) createWindow();
     });
 });
+// hello there
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit();
