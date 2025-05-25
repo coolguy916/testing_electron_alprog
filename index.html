@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'"
+    />
+    <meta
+      http-equiv="X-Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'"
+    />
+    <link rel="stylesheet" href="./view/css/style.css
+    " />
+    <title>Hello from Electron renderer!</title>
+  </head>
+  <body>
+    <div class="dashboard">
+      <header>
+        <h1>Hello, Adji 👋</h1>
+        <p>Welcome to your dashboard</p>
+      </header>
+
+      <main>
+        <div class="card">
+          <h2>Users</h2>
+          <div id="user-list">
+            <!-- Populated by renderer.js -->
+          </div>
+        </div>
+      </main>
+
+      <footer>
+        <p>&copy; 2025 Dashboard by Adji</p>
+      </footer>
+    </div>
+
+    <script src="../../../renderer.js"></script>
+  </body>
+</html>
