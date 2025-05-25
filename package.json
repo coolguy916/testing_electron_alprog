@@ -17,5 +17,13 @@
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "mysql2": "^3.14.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coolguy916/testing_electron_alprog.git"
+  },
+  "bugs": {
+    "url": "https://github.com/coolguy916/testing_electron_alprog/issues"
+  },
+  "homepage": "https://github.com/coolguy916/testing_electron_alprog#readme"
 }
