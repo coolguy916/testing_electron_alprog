@@ -2,7 +2,7 @@ const mysql = require('mysql2');
 const crypto = require('crypto');
 
 const ALGORITHM = 'aes-256-cbc';
-const SECRET_KEY = crypto.createHash('sha256').update('7KZRHrMDBKedjuNK').digest(); 
+const SECRET_KEY = crypto.createHash('sha256').update('7KZRHrMDBKedjuNK').digest();
 const IV_LENGTH = 16;
 
 class Database {
@@ -56,7 +56,8 @@ class Database {
 
     postData(tableName, data = {}) {
         const columns = Object.keys(data);
-        const values = Object.values(data).map(val => this.encrypt(String(val))); // Encrypt semua nilai
+        // const values = Object.values(data).map(val => this.encrypt(String(val))); // Encrypt semua nilai
+        const values = Object.values(data); // Encrypt semua nilai
         const placeholders = columns.map(() => '?').join(', ');
         const sql = `INSERT INTO \`${tableName}\` (${columns.join(', ')}) VALUES (${placeholders})`;
         return this.query(sql, values);
@@ -119,7 +120,7 @@ module.exports = Database;
 // const crypto = require('crypto');
 
 // const ALGORITHM = 'aes-256-cbc';
-// const SECRET_KEY = crypto.createHash('sha256').update('7KZRHrMDBKedjuNK').digest(); 
+// const SECRET_KEY = crypto.createHash('sha256').update('7KZRHrMDBKedjuNK').digest();
 // const IV_LENGTH = 16;
 
 // class Database {
