@@ -1,59 +1,108 @@
+require('dotenv').config();
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { insertSensorData } = require('./controller/databaseController');
-const Database = require('./db/database');
+const Database = require('./lib/database');
+const SerialCommunicator = require('./lib/serialCommunicator');
+const dbController = require('./controller/databaseController');
 
 // -------------------- Init DB Instance --------------------
 const db = new Database({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'db_alpro'
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_DATABASE || 'db_alpro'
 });
-db.connect();
 
-// -------------------- Electron Window Setup --------------------
-const createWindow = () => {
-    const win = new BrowserWindow({
-        width: 800,
-        height: 600,
+let mainWindow;
+let serialCommunicator;
+const apiApp = express();
+
+async function initializeApp() {
+    try {
+        await db.connect();
+        dbController.initializeController(db);
+        createWindow();
+        setupExpressAPI();
+    } catch (error) {
+        console.error("Failed to initialize application:", error);
+        app.quit();
+    }
+}
+
+function createWindow() {
+    mainWindow = new BrowserWindow({
+        width: 1000,
+        height: 700,
         autoHideMenuBar: true,
         webPreferences: {
-            nodeIntegration: true,
-            contextIsolation: false,
+            preload: path.join(__dirname, 'preload.js'),
+            contextIsolation: true,
+            nodeIntegration: false,
         }
     });
-    win.webContents.openDevTools();
-    win.loadFile("./index.html");
-};
+
+    mainWindow.loadFile('index.html');
+    mainWindow.webContents.openDevTools();
+    mainWindow.on('closed', () => {
+        mainWindow = null;
+    });
+
+    // --- SERIAL COMMUNICATOR CONFIGURATION ---
+    const serialPortConfig = {
+        portPath: null,
+        baudRate: 9600,
+        lineDelimiter: '\r\n',
+        dataType: 'json-object',
+        dbTableName: 'sensor_data',
+        requiredFields: ['user_id', 'device_id']
+    };
+
+    serialCommunicator = new SerialCommunicator(serialPortConfig, db, mainWindow);
+    serialCommunicator.connect();
+}
+
+function setupExpressAPI() {
+    const apiPort = process.env.API_PORT || 3001;
+    apiApp.use(cors());
+    apiApp.use(bodyParser.json());
+    apiApp.post('/api/sensor-data', dbController.insertSensorData); // Use the method from the initialized controller
+    apiApp.listen(apiPort, () => {
+        console.log(`API server (for external data input) listening at http://localhost:${apiPort}`);
+    });
+}
 
 // -------------------- Electron Lifecycle --------------------
-app.whenReady().then(() => {
-    createWindow();
+app.whenReady().then(initializeApp);
 
-    app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0) createWindow();
-    });
+app.on('window-all-closed', async () => {
+    if (serialCommunicator) {
+        try {
+            await serialCommunicator.close();
+        } catch (error) {
+            console.error("Error closing serial communicator:", error);
+        }
+    }
+    if (db) {
+        try {
+            await db.close();
+        } catch (error) {
+            console.error("Error closing database connection:", error);
+        }
+    }
+    if (process.platform !== 'darwin') {
+        app.quit();
+    }
 });
 
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') app.quit();
+app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+        initializeApp(); // Or just createWindow() if DB connection is persistent
+    }
 });
-
-// -------------------- Express API --------------------
-const apiApp = express();
-const apiPort = 3001;
-
-apiApp.use(cors());
-apiApp.use(bodyParser.json());
-apiApp.post('/api/sensor-data', insertSensorData);
-apiApp.listen(apiPort, () => {
-    console.log(`API server listening at http://localhost:${apiPort}`);
-});
-
 // -------------------- IPC Handlers --------------------
 ipcMain.handle('get-users', async () => {
     try {

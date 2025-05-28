@@ -1,38 +1,33 @@
-// controller/databaseController.js
-const Database = require('../db/database');
+let dbInstance;
 
-const db = new Database({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'db_alpro'
-});
-
-db.connect()
+const initializeController = (db) => {
+    dbInstance = db;
+};
 
 const insertSensorData = async (req, res) => {
     const { user_id, device_id, ph_reading, temperature_reading, moisture_percentage } = req.body;
 
     try {
-        db.validate(req.body, {
-            user_id: ['required'],
+        dbInstance.validate(req.body, {
+            user_id: ['required'], 
             device_id: ['required']
         });
 
-        const result = await db.postData('sensor_data', {
+         const result = await dbInstance.postData('sensor_data', {
             user_id,
             device_id,
-            ph_reading,
-            temperature_reading,
-            moisture_percentage
+            ph_reading: dbInstance.encrypt(String(ph_reading)),
+            temperature_reading: dbInstance.encrypt(String(temperature_reading)),
+            moisture_percentage: dbInstance.encrypt(String(moisture_percentage))
         });
-
-        res.json({ success: true, id: result.insertId });
+        
+        res.json({ success: true, id: result.insertId, message: "Data received via API and saved." });
     } catch (err) {
-        res.status(500).json({ success: false, error: err.message });
+        res.status(400).json({ success: false, error: err.message });
     }
 };
 
 module.exports = {
+    initializeController,
     insertSensorData
 };
