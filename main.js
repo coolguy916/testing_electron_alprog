@@ -69,7 +69,7 @@ function setupExpressAPI() {
     const apiPort = process.env.API_PORT || 3001;
     apiApp.use(cors());
     apiApp.use(bodyParser.json());
-    apiApp.post('/api/sensor-data', dbController.insertSensorData); // Use the method from the initialized controller
+    apiApp.post('/api/sensor-data', dbController.insertSensorData);
     apiApp.listen(apiPort, () => {
         console.log(`API server (for external data input) listening at http://localhost:${apiPort}`);
     });
