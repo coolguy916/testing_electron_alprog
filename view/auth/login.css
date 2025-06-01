@@ -6,7 +6,7 @@
 
 body {
   font-family: 'Poppins', sans-serif;
-  background: rgba(0, 0, 0, 0.5) url('images/rectangle_5_1748749364309_145.png') no-repeat center center/cover;
+  background: rgba(245, 126, 15, 0.89) url('images/rectangle_5_1748749364309_145.png') no-repeat center center/cover;
   backdrop-filter: blur(2px);
   height: 100vh;
   display: flex;
@@ -86,7 +86,7 @@ body {
 
 .terms {
   font-size: 14px;
-  color: #666;
+  color: #2f352e;
   text-align: center;
   margin-top: 8px;
 }
