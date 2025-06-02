@@ -1,0 +1,12 @@
+# Database Connection
+DB_HOST=host here
+DB_USER=user here
+DB_PASSWORD= pass here
+DB_DATABASE=db here
+DB_PORT=port here
+
+# API Server
+API_PORT=port here
+
+# Encryption Key for Database
+DB_ENCRYPTION_KEY=yourkey
