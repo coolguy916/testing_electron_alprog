@@ -5,12 +5,17 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { insertSensorData } = require('./controller/databaseController');
+const FirebaseDB = require('./lib/firebase'); 
 const Database = require('./lib/database');
 const SerialCommunicator = require('./lib/serialCommunicator');
-const dbController = require('./controller/databaseController');
+const dbController = require('./controller/databaseController')
+const authController = require('./controller/authController'); 
+;
 
 // -------------------- Init DB Instance --------------------
-const db = new Database({
+const useFirebase = process.env.USE_FIREBASE === 'true';
+
+const db = useFirebase ? new FirebaseDB() : new Database({
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
@@ -23,7 +28,9 @@ const apiApp = express();
 
 async function initializeApp() {
     try {
-        await db.connect();
+        if (!useFirebase) {
+            await db.connect();
+        }
         dbController.initializeController(db);
         createWindow();
         setupExpressAPI();
@@ -64,16 +71,37 @@ function createWindow() {
     serialCommunicator = new SerialCommunicator(serialPortConfig, db, mainWindow);
     serialCommunicator.connect();
 }
-
 function setupExpressAPI() {
     const apiPort = process.env.API_PORT || 3001;
     apiApp.use(cors());
     apiApp.use(bodyParser.json());
+
+    // --- Authentication Routes ---
+    apiApp.post('/api/auth/register', authController.register);
+    apiApp.post('/api/auth/login', authController.login);
+
+    // --- Existing Route ---
     apiApp.post('/api/sensor-data', dbController.insertSensorData);
+
+    // --- Example Protected Route ---
+    // The authenticateToken middleware runs before the final callback.
+    // If the token is invalid, the middleware will send a 403 response
+    // and this final callback will not be reached.
+    // apiApp.get('/api/profile', authenticateToken, async (req, res) => {
+    //     try {
+    //         const userProfile = await db.findUserByEmail(req.user.email);
+    //         const { password, ...profileData } = userProfile;
+    //         res.json({ success: true, data: profileData });
+    //     } catch (error) {
+    //         res.status(500).json({ success: false, message: 'Internal server error' });
+    //     }
+    // });
+
     apiApp.listen(apiPort, () => {
-        console.log(`API server (for external data input) listening at http://localhost:${apiPort}`);
+        console.log(`API server listening at http://localhost:${apiPort}`);
     });
 }
+
 
 // -------------------- Electron Lifecycle --------------------
 app.whenReady().then(initializeApp);
