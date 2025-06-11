@@ -4,13 +4,15 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const { insertSensorData } = require('./controller/databaseController');
-const FirebaseDB = require('./lib/firebase'); 
+
+const FirebaseDB = require('./lib/firebase');
 const Database = require('./lib/database');
 const SerialCommunicator = require('./lib/serialCommunicator');
-const dbController = require('./controller/databaseController')
-const authController = require('./controller/authController'); 
-;
+
+const { insertSensorData } = require('./controller/databaseController');
+const dbController = require('./controller/databaseController');
+const authController = require('./controller/authController');
+const mauiController = require('./controller/mauiController')
 
 // -------------------- Init DB Instance --------------------
 const useFirebase = process.env.USE_FIREBASE === 'true';
@@ -82,6 +84,8 @@ function setupExpressAPI() {
 
     // --- Existing Route ---
     apiApp.post('/api/sensor-data', dbController.insertSensorData);
+    apiApp.post('/api/maui-data', mauiController.genericDataHandler);
+
 
     // --- Example Protected Route ---
     // The authenticateToken middleware runs before the final callback.
