@@ -1,3 +1,6 @@
+// -------------------- Inisialisasi Library --------------------
+
+// --- LIBRARY NODE JS ---
 require('dotenv').config();
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
@@ -5,16 +8,20 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+// --- LIBRARY BIKIN SENDIRI---
+
 const FirebaseDB = require('./lib/firebase');
 const Database = require('./lib/database');
 const SerialCommunicator = require('./lib/serialCommunicator');
+
+// --- LIBRARY UNTUK EKSTERNAL (API) ---
 
 const { insertSensorData } = require('./controller/databaseController');
 const dbController = require('./controller/databaseController');
 const authController = require('./controller/authController');
 const mauiController = require('./controller/mauiController')
 
-// -------------------- Init DB Instance --------------------
+// -------------------- Inisialisasi Database --------------------
 const useFirebase = process.env.USE_FIREBASE === 'true';
 
 const db = useFirebase ? new FirebaseDB() : new Database({
@@ -27,6 +34,9 @@ const db = useFirebase ? new FirebaseDB() : new Database({
 let mainWindow;
 let serialCommunicator;
 const apiApp = express();
+
+// -------------------- Inisialisasi Aplikasi --------------------
+
 
 async function initializeApp() {
     try {
@@ -43,6 +53,8 @@ async function initializeApp() {
 }
 
 function createWindow() {
+
+    // --- CONFIGURASI JENDELA APLIKASI ---
     mainWindow = new BrowserWindow({
         width: 1000,
         height: 700,
@@ -61,17 +73,23 @@ function createWindow() {
     });
 
     // --- SERIAL COMMUNICATOR CONFIGURATION ---
+    // --- UPDATED SERIAL COMMUNICATOR CONFIGURATION ---
     const serialPortConfig = {
         portPath: null,
         baudRate: 9600,
         lineDelimiter: '\r\n',
         dataType: 'json-object',
-        dbTableName: 'sensor_data',
-        requiredFields: ['user_id', 'device_id']
+        dbTableName: 'sensor_data2',
+        requiredFields: [],
+        fieldsToEncrypt: []
     };
 
     serialCommunicator = new SerialCommunicator(serialPortConfig, db, mainWindow);
-    serialCommunicator.connect();
+
+    // Wait a bit for window to load before connecting
+    setTimeout(() => {
+        serialCommunicator.connect();
+    }, 2000);
 }
 function setupExpressAPI() {
     const apiPort = process.env.API_PORT || 3001;
@@ -136,6 +154,7 @@ app.on('activate', () => {
     }
 });
 // -------------------- IPC Handlers --------------------
+// -------------------- JEMBATAN FRONT END DENGAN BACK END --------------------
 ipcMain.handle('get-users', async () => {
     try {
         const users = await db.getAllUsers();
