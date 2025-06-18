@@ -6,7 +6,7 @@
 
 body {
   font-family: 'Poppins', sans-serif;
-  background: rgba(245, 126, 15, 0.89) url('images/rectangle_5_1748749364309_145.png') no-repeat center center/cover;
+  background: rgba(80, 245, 15, 0.89) url('images/rectangle_5_1748749364309_145.png') no-repeat center center/cover;
   backdrop-filter: blur(2px);
   height: 100vh;
   display: flex;

@@ -644,6 +644,10 @@
     <script>
         // Simple interactivity
         document.addEventListener('DOMContentLoaded', function() {
+            async function realtimeTemp() {
+                const respond = await windows.api.invoke('get-data-by-filters','sensor_data',{temperature_reading: "*"}, {orderBy: {column: "created_at", direction: "DESC" }, limit: 1});
+                
+            }
             // Add hover effects and animations
             const tableRows = document.querySelectorAll('.table-row');
             tableRows.forEach(row => {
