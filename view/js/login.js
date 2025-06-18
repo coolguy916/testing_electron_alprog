@@ -5,11 +5,12 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
     const password = document.getElementById('password').value;
     const errorMessage = document.getElementById('error-message');
 
+
     try {
         const response = await fetch('http://localhost:3001/api/auth/login', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
+            headers: { 'Content-Type': 'application/json' }, // FORMAT JSON
+            body: JSON.stringify({ email, password }) // DATA YANG AKAN DIMASUKKAN
         });
 
         const result = await response.json();
@@ -18,13 +19,13 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
             errorMessage.textContent = '';
             // Store user info in session storage to use across pages
             sessionStorage.setItem('loggedInUser', JSON.stringify(result.user));
-
+            window.location.href = '../../index.html';
             // Redirect based on the user's role
-            if (result.user.role === 'admin') {
-                window.location.href = '../../index.html';
-            } else {
-                window.location.href = "../../index.html";
-            }
+            // if (result.user.role === 'admin') {
+            //     window.location.href = '../../index.html';
+            // } else {
+            //     window.location.href = "../../index.html";
+            // }
         } else {
             errorMessage.textContent = result.error;
             sessionStorage.removeItem('loggedInUser');

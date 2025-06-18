@@ -16,14 +16,14 @@ function initializeController(databaseInstance) {
  * @param {object} res - The Express response object.
  */
 async function login(req, res) {
-    const { email, password } = req.body;
+    const { name, password } = req.body;
 
     db.validate(req.body, {
-        email: ['required', 'email'],
+        name: ['required'],
         password: ['required']
     });
     try {
-        const users = await db.getDataByFilters('users', { email });
+        const users = await db.getDataByFilters('users', { name });
         const user = users && users.length > 0 ? users[0] : null;
 
         if (!user) {
@@ -50,15 +50,15 @@ async function login(req, res) {
  * @param {object} res - The Express response object.
  */
 async function register(req, res) {
-    const { name, email, password } = req.body;
+    const { name, password } = req.body;
 
     db.validate(req.body, {
         name: ['required'],
-        email: ['required', 'email'],
+        // email: ['required', 'email'],
         password: ['required']
     });
     try {
-        const existingUsers = await db.getDataByFilters('users', { email });
+        const existingUsers = await db.getDataByFilters('users', { name });
         if (existingUsers && existingUsers.length > 0) {
             return res.status(409).json({ success: false, error: 'User with this email already exists.' });
         }
@@ -68,7 +68,6 @@ async function register(req, res) {
 
         const newUser = {
             name,
-            email,
             password: hashedPassword,
             role: 'user'
         };
