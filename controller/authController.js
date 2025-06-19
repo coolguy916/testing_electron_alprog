@@ -16,14 +16,14 @@ function initializeController(databaseInstance) {
  * @param {object} res - The Express response object.
  */
 async function login(req, res) {
-    const { name, password } = req.body;
+    const { username, password } = req.body;
 
     db.validate(req.body, {
-        name: ['required'],
+        username: ['required'],
         password: ['required']
     });
     try {
-        const users = await db.getDataByFilters('users', { name });
+        const users = await db.getDataByFilters('users', { username });
         const user = users && users.length > 0 ? users[0] : null;
 
         if (!user) {
@@ -50,15 +50,15 @@ async function login(req, res) {
  * @param {object} res - The Express response object.
  */
 async function register(req, res) {
-    const { name, password } = req.body;
+    const { username, password } = req.body;
 
     db.validate(req.body, {
-        name: ['required'],
+        username: ['required'],
         // email: ['required', 'email'],
         password: ['required']
     });
     try {
-        const existingUsers = await db.getDataByFilters('users', { name });
+        const existingUsers = await db.getDataByFilters('users', { username });
         if (existingUsers && existingUsers.length > 0) {
             return res.status(409).json({ success: false, error: 'User with this email already exists.' });
         }
@@ -67,9 +67,9 @@ async function register(req, res) {
         const hashedPassword = await bcrypt.hash(password, salt);
 
         const newUser = {
-            name,
+            username,
             password: hashedPassword,
-            role: 'user'
+            // role: 'user'
         };
 
         const result = await db.postData('users', newUser);

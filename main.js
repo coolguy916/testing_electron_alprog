@@ -28,7 +28,7 @@ const db = useFirebase ? new FirebaseDB() : new Database({
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_DATABASE || 'db_alpro'
+    database: process.env.DB_DATABASE || 'u472257798_db_alprogB'
 });
 
 let mainWindow;
@@ -44,6 +44,8 @@ async function initializeApp() {
             await db.connect();
         }
         dbController.initializeController(db);
+        authController.initializeController(db); // <-- ADD THIS LINE
+
         createWindow();
         setupExpressAPI();
     } catch (error) {
@@ -66,8 +68,12 @@ function createWindow() {
         }
     });
 
-    mainWindow.loadFile('index.html');
-    mainWindow.webContents.openDevTools();
+    // Load the desired HTML file
+    mainWindow.loadFile(path.join(__dirname, 'view', 'auth', 'cobalogin.html'));
+
+    // Set the window to fullscreen
+    mainWindow.setFullScreen(true);
+
     mainWindow.on('closed', () => {
         mainWindow = null;
     });
@@ -79,9 +85,14 @@ function createWindow() {
         baudRate: 9600,
         lineDelimiter: '\r\n',
         dataType: 'json-object',
-        dbTableName: 'sensor_data2',
+        dbTableName: 'sensor_data_kel4',
         requiredFields: [],
-        fieldsToEncrypt: []
+        fieldsToEncrypt: [
+            "temperature_reading",
+            "humidity_reading",
+            "moisture_reading",
+            "light_reading"
+        ]
     };
 
     serialCommunicator = new SerialCommunicator(serialPortConfig, db, mainWindow);
@@ -125,7 +136,7 @@ function setupExpressAPI() {
 }
 
 
-// -------------------- Electron Lifecycle --------------------
+// -------------------- Electron  q --------------------
 app.whenReady().then(initializeApp);
 
 app.on('window-all-closed', async () => {
@@ -191,11 +202,15 @@ ipcMain.handle('update-data', async (event, table, data, whereClause, whereParam
     }
 });
 
-ipcMain.handle('get-data-by-filters', async (event, table, filters) => {
+// In your main.js or a related backend file
+
+ipcMain.handle('get-data-by-filters', async (event, table, filters, options) => { // <-- ADD 'options' HERE
     try {
-        const result = await db.getDataByFilters(table, filters);
+        // Now, pass all three arguments to your database function
+        const result = await db.getDataByFilters(table, filters, options); // <-- PASS 'options' HERE
         return { success: true, data: result };
     } catch (err) {
+        console.error("Error in get-data-by-filters handler:", err); // It's good practice to log the error on the backend
         return { success: false, error: err.message };
     }
 });

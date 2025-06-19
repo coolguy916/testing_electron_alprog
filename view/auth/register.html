@@ -12,7 +12,7 @@
 <body>
 
     <div class="auth-container">
-        <button class="close-btn">&times;</button>
+        <button class="close-btn" onclick="window.location.href = 'cobalogin.html';">&times;</button>
         
         <div class="register-section">
             <h2>Create an Account</h2>
@@ -31,15 +31,17 @@
                 <hr>
             </div>
 
-            <form>
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="you@example.com" required>
+            <form id="register-form">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Choose a username" required>
                 
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" placeholder="Create a password" required>
 
                 <label for="confirm-password">Confirm Password</label>
                 <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm your password" required>
+
+                <p id="error-message" class="error-text"></p>
 
                 <button type="submit" class="register-btn">Create Account</button>
             </form>
@@ -51,5 +53,6 @@
 
     </div>
 
+    <script src="../js/register.js" defer></script>
 </body>
 </html>
