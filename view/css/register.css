@@ -1,0 +1,157 @@
+/* Reset dan Pengaturan Dasar */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #69f916; /* Warna oranye */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px 0; /* Menambah padding untuk layar kecil */
+    color: #333;
+}
+
+/* Kontainer Utama */
+.auth-container {
+    background-color: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    width: 420px;
+    max-width: 95%;
+    position: relative;
+}
+
+/* Tombol Tutup (X) */
+.close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 24px;
+    color: #aaa;
+    cursor: pointer;
+    line-height: 1;
+}
+
+/* Bagian Register */
+.register-section h2 {
+    font-size: 28px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+/* Tombol Sosial */
+.social-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    font-family: 'Poppins', sans-serif;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    margin-bottom: 15px;
+}
+
+.social-btn:hover {
+    background-color: #f7f7f7;
+    border-color: #bbb;
+}
+
+.social-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Garis Pemisah (OR) */
+.separator {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #aaa;
+    margin: 25px 0;
+}
+
+.separator hr {
+    flex: 1;
+    border: none;
+    border-top: 1px solid #e0e0e0;
+}
+
+.separator span {
+    padding: 0 15px;
+    font-size: 14px;
+}
+
+/* Form Styling */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 15px;
+    font-family: 'Poppins', sans-serif;
+}
+
+input:focus {
+    outline: none;
+    border-color: #F97316;
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
+}
+
+/* Tombol Register */
+.register-btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    font-family: 'Poppins', sans-serif;
+    background-color: #111;
+    color: white;
+    border: none;
+    margin-top: 10px;
+}
+
+.register-btn:hover {
+    background-color: #333;
+}
+
+/* Teks Persetujuan */
+.terms-privacy {
+    font-size: 12px;
+    color: #888;
+    text-align: center;
+    margin-top: 25px;
+}
+
+.terms-privacy a {
+    color: #333;
+    text-decoration: underline;
+}
