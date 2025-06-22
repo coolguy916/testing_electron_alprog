@@ -1,3 +1,5 @@
+// EXAMPLE JS
+
 // Global variables
 let isRealtime = true;
 const table = "sensor_data_kel4";
@@ -639,7 +641,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Start real-time updates
     if (realtimeInterval) clearInterval(realtimeInterval);
-    realtimeInterval = setInterval(startRealtime, 5000);
+    realtimeInterval = setInterval(startRealtime, 1000);
 
     // Update current time
     setInterval(updateCurrentTime, 1000);
