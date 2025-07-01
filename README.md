@@ -1,261 +1,108 @@
-# Dokumentasi API Backend PHP untuk Pemula
+# alprog_boncos
+This is an Electron application designed to read, store, and visualize sensor data. It features real-time data monitoring, database integration, serial communication capabilities, and a user-friendly dashboard.
+# 🌱 Electron Sensor Dashboard
 
-## Pengenalan
-API ini adalah backend sederhana yang dibuat dengan PHP untuk mengelola data di database MySQL. API ini menyediakan 2 fungsi utama:
-1. **Menyimpan data** ke database (POST)
-2. **Mengambil data** dari database (GET)
-
-## URL Dasar API
-```
-https://yourserver.com/api
-```
-*Ganti `yourserver.com` dengan alamat server Anda*
+This is an **Electron application** designed to read, store, and visualize sensor data. It features real-time monitoring, database integration, serial communication, and a user-friendly dashboard interface.
 
 ---
 
-## 1. MENYIMPAN DATA (POST)
+## 🚀 Features
 
-### Endpoint
-```
-POST /api/maui-data
-```
-
-### Fungsi
-Menyimpan data baru ke dalam tabel database yang ditentukan.
-
-### Format Data yang Dikirim
-Data harus dikirim dalam format JSON dengan struktur berikut:
-
-```json
-{
-  "tableName": "nama_tabel",
-  "records": [
-    {
-      "field1": "value1",
-      "field2": "value2",
-      "field3": "value3"
-    }
-  ]
-}
-```
-
-### Contoh Penggunaan
-Untuk menyimpan data pengguna:
-
-```json
-{
-  "tableName": "users",
-  "records": [
-    {
-      "nama": "John Doe",
-      "email": "john@example.com",
-      "umur": 25,
-      "tanggal_dibuat": "2025-06-17 10:30:00"
-    }
-  ]
-}
-```
-
-### Contoh Response Sukses
-```json
-{
-  "success": true,
-  "message": "Successfully inserted 1 records into 'users'.",
-  "insertedIds": [15]
-}
-```
-
-### Contoh Response Error
-```json
-{
-  "success": false,
-  "error": "A 'tableName' string is required in the request body."
-}
-```
-
-### Cara Kerja Backend
-1. API menerima data JSON dari aplikasi MAUI
-2. Memvalidasi apakah `tableName` dan `records` ada
-3. Mengecek apakah struktur data benar
-4. Menyimpan setiap record ke database
-5. Mengembalikan response sukses atau error
+- **Real-time Sensor Data Monitoring**: Continuously tracks and displays sensor readings.
+- **Database Integration**: Stores sensor data in a MySQL database for logging and analysis.
+- **Serial Communication**: Interfaces with serial devices like Arduino to receive sensor data.
+- **Express.js API**: Robust backend to manage and serve sensor data.
+- **Interactive Dashboard**: Intuitive UI to visualize and interact with the data.
+- **User Authentication**: Secure login and registration for user management.
 
 ---
 
-## 2. MENGAMBIL DATA (GET)
+## 💻 Tech Stack
 
-### Endpoint
-```
-GET /api/maui-get/{nama_tabel}
-```
-
-### Fungsi
-Mengambil data dari tabel database yang ditentukan.
-
-### Format URL
-
-#### Mengambil semua data:
-```
-GET /api/maui-get/users
-```
-
-#### Mengambil data dengan filter:
-```
-GET /api/maui-get/users?filters[nama]=John&filters[umur]=25
-```
-
-#### Mengambil data dengan pengurutan:
-```
-GET /api/maui-get/users?orderBy[column]=nama&orderBy[direction]=ASC
-```
-
-#### Membatasi jumlah data:
-```
-GET /api/maui-get/users?limit=10
-```
-
-### Contoh Response Sukses
-```json
-{
-  "success": true,
-  "message": "Successfully retrieved 2 records from 'users'.",
-  "data": [
-    {
-      "id": "1",
-      "nama": "John Doe",
-      "email": "john@example.com",
-      "umur": "25",
-      "tanggal_dibuat": "2025-06-17 10:30:00"
-    },
-    {
-      "id": "2",
-      "nama": "Jane Smith",
-      "email": "jane@example.com",
-      "umur": "30",
-      "tanggal_dibuat": "2025-06-17 11:15:00"
-    }
-  ],
-  "count": 2
-}
-```
-
-### Contoh Response Error
-```json
-{
-  "success": false,
-  "error": "Table name is required in URL."
-}
-```
-
-### Cara Kerja Backend
-1. API menerima request GET dari aplikasi MAUI
-2. Mengambil nama tabel dari URL
-3. Memproses filter jika ada
-4. Mengambil data dari database
-5. Mengembalikan data dalam format JSON
+| Layer         | Technology                                                                 |
+|---------------|----------------------------------------------------------------------------|
+| **Frontend**  | HTML, CSS, JavaScript, Tailwind CSS, Bootstrap                            |
+| **Backend**   | Node.js, Express.js                                                       |
+| **Database**  | MySQL with `mysql2` driver                                                |
+| **Desktop App** | Electron                                                                |
+| **Serial Communication** | `serialport` library                                          |
 
 ---
 
-## Struktur Database
+## 📂 File Structure
+```bash
 
-### Tabel `users` (contoh)
-```sql
-CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nama VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL,
-    umur INT,
-    tanggal_dibuat DATETIME DEFAULT CURRENT_TIMESTAMP
-);
+alprog_boncos/
+│
+├── main.js # Main Electron process
+├── preload.js # Secure IPC preloader
+├── index.html # Login page
+├── dashboard.html # Dashboard UI
+│
+├── controller/
+│ └── databaseController.js # Handles DB CRUD operations
+│
+├── lib/
+│ ├── database.js # DB connection and query logic
+│ └── serialCommunicator.js # Serial communication logic
+│
+├── view/ # All UI-related files (HTML, CSS, JS)
+├── .env # Environment variables (DB credentials)
+├── package.json # Project metadata and dependencies
 ```
 
 ---
 
-## Error Codes dan Penanganannya
+## 🔧 Setup and Installation
 
-### HTTP Status Codes
-- **200 OK**: Request berhasil
-- **201 Created**: Data berhasil dibuat
-- **400 Bad Request**: Data yang dikirim tidak valid
-- **405 Method Not Allowed**: Method HTTP salah
-- **500 Internal Server Error**: Error server
+Follow these steps to set up and run the project:
 
-### Contoh Penanganan Error
-```json
-{
-  "success": false,
-  "error": "Invalid JSON input."
-}
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/coolguy916/alprog_boncos.git
+cd alprog_boncos
 ```
+### 2. Install Dependencies
+```bash
+npm install
+```
+
+### 3. Set Up the Database
+Ensure you have MySQL running.
+
+Create a database (e.g., sensor_app).
+
+Add your DB config to a .env file:
+```bash
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=yourpassword
+DB_NAME=sensor_app
+```
+### 4. Run the Application
+npm start
 
 ---
 
-## Tips untuk Pemula
-
-### 1. Testing API
-Gunakan tools seperti Postman atau browser untuk test API:
-```
-GET https://yourserver.com/api/health
-```
-
-### 2. Debugging
-Jika ada error, cek:
-- Apakah URL sudah benar?
-- Apakah format JSON sudah benar?
-- Apakah nama tabel sudah benar?
-- Apakah koneksi database berjalan?
-
-### 3. Keamanan
-- Jangan expose kredensial database
-- Gunakan HTTPS untuk production
-- Validasi semua input data
-
-### 4. Konfigurasi
-Pastikan file konfigurasi database sudah benar:
-```php
-$config = [
-    'host' => 'localhost',
-    'user' => 'your_username',
-    'password' => 'your_password',
-    'database' => 'your_database'
-];
-```
+🗃️ Database Schema
+| table                 | Description              |
+| --------------------- | ------------------------ |
+| `user_table`          | Associated user ID       |
+| `device_Table`        | Unique device identifier |
+| `Sensor_Table`        | pH sensor reading        |
 
 ---
 
-## Contoh Implementasi di C# MAUI
+📡 API Endpoints
+| Method | Endpoint       | Description                      |
+| ------ | -------------- | -------------------------------- |
+| POST   | `/sensor-data` | Add new sensor data              |
+| GET    | `/sensor-data` | Fetch sensor data (with filters) |
+| PUT    | `/sensor-data` | Update existing sensor data      |
+| DELETE | `/sensor-data` | Delete sensor data               |
 
-### Mengirim Data
-```csharp
-var data = new {
-    tableName = "users",
-    records = new[] {
-        new {
-            nama = "John",
-            email = "john@email.com",
-            umur = 25
-        }
-    }
-};
+🤝 Contributing
+@adjip.sp follow for more
 
-string json = JsonSerializer.Serialize(data);
-var content = new StringContent(json, Encoding.UTF8, "application/json");
-var response = await httpClient.PostAsync(url, content);
-```
 
-### Mengambil Data
-```csharp
-string url = "https://yourserver.com/api/maui-get/users";
-var response = await httpClient.GetAsync(url);
-string responseText = await response.Content.ReadAsStringAsync();
-```
-
----
-
-## Kesimpulan
-
-API ini menyediakan cara sederhana untuk:
-1. **POST /api/maui-data**: Menyimpan data ke database
-2. **GET /api/maui-get/{table}**: Mengambil data dari database
-
-Kedua endpoint ini cukup untuk aplikasi CRUD sederhana. Pastikan selalu validasi data dan handle error dengan baik!
