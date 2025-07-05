@@ -19,7 +19,7 @@ const SerialCommunicator = require('./lib/serialCommunicator');
 const { insertSensorData } = require('./controller/databaseController');
 const dbController = require('./controller/databaseController');
 const authController = require('./controller/authController');
-const mauiController = require('./controller/mauiController')
+const genericDataController = require('./controller/genericDataController')
 
 // -------------------- Inisialisasi Database --------------------
 const useFirebase = process.env.USE_FIREBASE === 'false';
@@ -113,7 +113,8 @@ function setupExpressAPI() {
 
     // --- Existing Route ---
     apiApp.post('/api/sensor-data', dbController.insertSensorData);
-    apiApp.post('/api/maui-data', mauiController.genericDataHandler);
+    apiApp.post('/api/generic-data-post', genericDataController.genericDataHandler);
+    apiApp.post('/api/generic-data-request', genericDataController.genericDataRetriever);
 
 
     // --- Example Protected Route ---

@@ -26,6 +26,28 @@ async function insertSensorData(req, res) {
     }
 };
 
+async function getSensorData(req, res) {
+    const { user_id, device_id } = req.query;
+    try {
+        dbInstance.validate(req.query, {
+            user_id: ['required'],
+            device_id: ['required']
+        });
+
+        const result = await dbInstance.getData('sensor_data', {
+            user_id,
+            device_id,
+            ph_reading,
+            temperature_reading,
+            moisture_percentage,
+        });
+
+        res.json({ success: true, data: result });
+    } catch (err) {
+        res.status(400).json({ success: false, error: err.message });
+    }
+};
+
 module.exports = {
     initializeController,
     insertSensorData
